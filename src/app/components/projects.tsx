@@ -417,7 +417,7 @@ function ProjectCard({
 
   return (
     <motion.article
-      className="project-card relative h-[430px] overflow-visible rounded-3xl border border-white/10 bg-[rgba(16,16,16,0.6)] p-5 backdrop-blur-2xl hover:cursor-pointer"
+      className="project-card relative min-h-[430px] overflow-visible rounded-3xl border border-white/10 bg-[rgba(16,16,16,0.6)] p-4 backdrop-blur-2xl hover:cursor-pointer sm:p-5"
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       onMouseMove={handleMove}
       onMouseLeave={reset}
@@ -461,7 +461,7 @@ function ProjectCard({
       <div className="relative z-10 flex h-full flex-col justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">{project.subtitle}</p>
-          <h3 className="mt-3 text-2xl font-bold text-zinc-100">{project.title}</h3>
+          <h3 className="mt-3 text-xl font-bold text-zinc-100 sm:text-2xl">{project.title}</h3>
         </div>
 
         <div className="mt-auto space-y-4">
@@ -568,14 +568,14 @@ function ProjectModal({
 
   return (
     <motion.div
-      className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+      className="fixed inset-0 z-[120] flex items-start justify-center overflow-y-auto bg-black/70 p-3 backdrop-blur-md sm:items-center sm:p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
     >
       <motion.div
-        className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/15 bg-[rgba(18,18,18,0.9)] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl sm:p-6"
+        className="relative my-4 max-h-[calc(100svh-1.5rem)] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/15 bg-[rgba(18,18,18,0.9)] p-4 shadow-[0_30px_90px_rgba(0,0,0,0.55)] backdrop-blur-2xl sm:my-6 sm:max-h-[90svh] sm:p-6"
         initial={{ opacity: 0, y: 26, scale: 0.97 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -585,14 +585,14 @@ function ProjectModal({
           <button
             type="button"
             onClick={onClose}
-            className="absolute right-4 top-4 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-100 transition-colors hover:bg-white/20"
+            className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-zinc-100 transition-colors hover:bg-white/20 sm:right-4 sm:top-4"
             aria-label="Close project details"
           >
             <X className="h-4 w-4" />
           </button>
 
           <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">{project.subtitle}</p>
-          <h3 className="mt-2 pr-10 text-2xl font-bold text-zinc-100">{project.title}</h3>
+          <h3 className="mt-2 pr-10 text-xl font-bold text-zinc-100 sm:text-2xl">{project.title}</h3>
           <p className="mt-3 text-sm text-zinc-300 sm:text-base">{project.description}</p>
           {project.proofUrl ? (
             <a
@@ -606,7 +606,7 @@ function ProjectModal({
           ) : null}
 
           <div className="relative mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/40">
-            <div className="relative h-56 w-full sm:h-72">
+            <div className="relative h-48 w-full sm:h-72">
               {!modalFallback && currentSlide ? (
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -777,7 +777,7 @@ export function Projects() {
     <section
       ref={sectionRef}
       id="projects"
-      className="relative bg-black pb-20 pt-20"
+      className="relative scroll-mt-24 bg-black pb-20 pt-20"
       onMouseLeave={clearPointer}
     >
       <div className="blueprint-grid pointer-events-none absolute inset-0" />
@@ -794,7 +794,7 @@ export function Projects() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-6xl px-6 md:px-10">
+      <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-10">
         <motion.h2
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -824,7 +824,7 @@ export function Projects() {
           hidden: { opacity: 0 },
           visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.08 } },
         }}
-        className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 px-6 sm:grid-cols-2 xl:grid-cols-3"
+        className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 px-4 sm:grid-cols-2 sm:px-6 xl:grid-cols-3"
       >
         {PROJECTS.map((project, index) => (
           <motion.div

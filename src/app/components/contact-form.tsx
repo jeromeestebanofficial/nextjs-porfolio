@@ -139,16 +139,16 @@ export function ContactForm() {
   };
 
   return (
-    <section id="contact" className="relative bg-black py-16">
+    <section id="contact" className="relative scroll-mt-24 bg-black py-16">
       <div className="noise-layer pointer-events-none absolute inset-0" />
 
-      <div className="relative mx-auto w-full max-w-6xl px-6 md:px-10">
+      <div className="relative mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-10">
         <motion.div
           initial={{ opacity: 0, y: 18, scale: 0.98 }}
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
-          className="contact-glass-card relative w-full overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur-2xl sm:p-8 md:p-10"
+          className="contact-glass-card relative w-full overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-2xl sm:p-8 md:p-10"
         >
           <div className="sheen-layer pointer-events-none absolute inset-[-35%]" />
           <div className="relative z-10">
@@ -197,13 +197,13 @@ export function ContactForm() {
                       })}
                     </motion.div>
 
-                    <div className="flex justify-end">
+                    <div className="flex justify-stretch sm:justify-end">
                       <motion.button
                         type="button"
                         whileTap={{ scale: 0.97 }}
                         onClick={() => canContinue && setStep(2)}
                         disabled={!canContinue}
-                        className="rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 disabled:cursor-not-allowed disabled:opacity-45"
+                        className="w-full rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
                       >
                         Continue
                       </motion.button>
@@ -219,7 +219,7 @@ export function ContactForm() {
                     onSubmit={handleSubmit}
                     className="space-y-4"
                   >
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm text-zinc-300">
                         Service: <span className="text-zinc-100">{selectedService}</span>
                       </p>
@@ -277,7 +277,7 @@ export function ContactForm() {
                       type="submit"
                       whileTap={{ scale: 0.97 }}
                       disabled={submitState === "loading"}
-                      className="radiant-submit group relative mt-2 inline-flex h-11 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 px-5 text-sm font-semibold text-zinc-100 backdrop-blur-xl"
+                      className="radiant-submit group relative mt-2 inline-flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 px-5 text-sm font-semibold text-zinc-100 backdrop-blur-xl sm:w-auto"
                     >
                       <span className="submit-sheen pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.46),transparent)]" />
 
