@@ -61,9 +61,7 @@ function ParticleCluster() {
         <bufferGeometry>
           <bufferAttribute
             attach="attributes-position"
-            count={positions.length / 3}
-            itemSize={3}
-            array={positions}
+            args={[positions, 3]}
           />
         </bufferGeometry>
         <pointsMaterial
