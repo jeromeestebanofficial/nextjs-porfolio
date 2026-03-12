@@ -286,7 +286,7 @@ export function PortfolioHome() {
 
         <footer className="relative border-t border-white/10 bg-black/65 py-10">
           <div className="mx-auto w-full max-w-6xl px-6 md:px-10">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
               <div>
                 <h3 className="text-base font-semibold text-zinc-100">Jerome</h3>
                 <p className="mt-2 max-w-xs text-sm text-zinc-400">

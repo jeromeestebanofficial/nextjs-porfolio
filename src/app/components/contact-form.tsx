@@ -174,7 +174,7 @@ export function ContactForm() {
                       variants={staggerContainer}
                       initial="initial"
                       animate="animate"
-                      className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+                      className="grid grid-cols-1 gap-3 md:grid-cols-2"
                     >
                       {OPTIONS.map((option) => {
                         const active = selectedService === option;
@@ -203,7 +203,7 @@ export function ContactForm() {
                         whileTap={{ scale: 0.97 }}
                         onClick={() => canContinue && setStep(2)}
                         disabled={!canContinue}
-                        className="w-full rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
+                        className="w-full rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 disabled:cursor-not-allowed disabled:opacity-45 md:w-auto"
                       >
                         Continue
                       </motion.button>
@@ -248,7 +248,7 @@ export function ContactForm() {
                       className="min-h-[110px] w-full resize-none rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-zinc-100 outline-none transition-all duration-200 placeholder:text-zinc-500 focus:border-cyan-400/70 focus:shadow-[0_0_0_3px_rgba(6,182,212,0.14)]"
                     />
 
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                       <FloatingField
                         id="client-name"
                         label="Name"
@@ -277,7 +277,7 @@ export function ContactForm() {
                       type="submit"
                       whileTap={{ scale: 0.97 }}
                       disabled={submitState === "loading"}
-                      className="radiant-submit group relative mt-2 inline-flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 px-5 text-sm font-semibold text-zinc-100 backdrop-blur-xl sm:w-auto"
+                      className="radiant-submit group relative mt-2 inline-flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 px-5 text-sm font-semibold text-zinc-100 backdrop-blur-xl md:w-auto"
                     >
                       <span className="submit-sheen pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.46),transparent)]" />
 

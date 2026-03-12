@@ -506,7 +506,7 @@ function ProjectCard({
             ))}
           </div>
 
-          <div className="flex flex-col items-start gap-2 pt-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="flex flex-col items-start gap-2 pt-1 md:flex-row md:flex-wrap md:items-center md:justify-between">
             <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-200 backdrop-blur-xl">
               <Lock className="h-3.5 w-3.5" />
               <span className="truncate">
@@ -523,14 +523,14 @@ function ProjectCard({
                 rel="noreferrer"
                 onClick={(event) => event.stopPropagation()}
                 onKeyDown={(event) => event.stopPropagation()}
-                className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/20 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/20 md:w-auto"
               >
                 <Globe className="h-3.5 w-3.5" />
                 Live Website
               </a>
             ) : (
-              <span className="group relative inline-flex w-full sm:w-auto">
-                <span className="inline-flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-zinc-500 backdrop-blur-xl sm:w-auto">
+              <span className="group relative inline-flex w-full md:w-auto">
+                <span className="inline-flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-zinc-500 backdrop-blur-xl md:w-auto">
                   <Globe className="h-3.5 w-3.5" />
                   Live Preview
                 </span>
@@ -570,7 +570,7 @@ function ProjectModal({
 
   return (
     <motion.div
-      className="fixed inset-0 z-[120] flex items-start justify-center overflow-y-auto bg-black/70 p-3 backdrop-blur-md sm:items-center sm:p-4"
+      className="fixed inset-0 z-[120] flex items-start justify-center overflow-y-auto bg-black/70 p-3 backdrop-blur-md md:items-center md:p-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -681,19 +681,19 @@ function ProjectModal({
             ))}
           </div>
 
-          <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2.5">
+          <div className="mt-5 flex flex-col items-stretch gap-2 md:flex-row md:flex-wrap md:items-center md:gap-2.5">
             {project.repoVisibility === "public" && project.repoUrl ? (
               <a
                 href={project.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18 md:w-auto"
               >
                 <Github className="h-4 w-4" />
                 GitHub
               </a>
             ) : (
-              <span className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-200 backdrop-blur-xl sm:w-auto">
+              <span className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-200 backdrop-blur-xl md:w-auto">
                 <Lock className="h-4 w-4" />
                 {project.privateNote ?? "Private repository"}
               </span>
@@ -704,14 +704,14 @@ function ProjectModal({
                 href={project.websiteUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18 md:w-auto"
               >
                 <Globe className="h-4 w-4" />
                 Live Website
               </a>
             ) : (
-              <span className="group relative inline-flex w-full sm:w-auto">
-                <span className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-zinc-500 backdrop-blur-xl sm:w-auto">
+              <span className="group relative inline-flex w-full md:w-auto">
+                <span className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-zinc-500 backdrop-blur-xl md:w-auto">
                   <Globe className="h-4 w-4" />
                   Live Preview
                 </span>
@@ -826,7 +826,7 @@ export function Projects() {
           hidden: { opacity: 0 },
           visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.08 } },
         }}
-        className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 px-4 sm:grid-cols-2 sm:px-6 xl:grid-cols-3"
+        className="mx-auto grid w-full max-w-6xl grid-cols-1 gap-5 px-4 md:grid-cols-2 md:px-6 xl:grid-cols-3"
       >
         {PROJECTS.map((project, index) => (
           <motion.div

@@ -109,7 +109,7 @@ export function HeroOverlay() {
 
           <motion.div
             variants={itemVariants}
-            className="relative z-10 mt-6 flex w-full flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center"
+            className="relative z-10 mt-6 flex w-full flex-col items-start gap-3 md:flex-row md:flex-wrap md:items-center"
           >
             <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/20 bg-white/8 px-2.5 py-2 backdrop-blur-xl sm:gap-3 sm:px-3">
               <SocialIconButton href="https://github.com" label="GitHub">
@@ -134,7 +134,7 @@ export function HeroOverlay() {
 
           <motion.div
             variants={itemVariants}
-            className="relative z-10 mt-8 flex w-full flex-col items-stretch gap-3 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center"
+            className="relative z-10 mt-8 flex w-full flex-col items-stretch gap-3 md:mt-9 md:flex-row md:flex-wrap md:items-center"
           >
             <motion.a
               href="#contact"
@@ -146,14 +146,14 @@ export function HeroOverlay() {
                 ],
               }}
               transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-              className="inline-flex w-full justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black sm:w-auto"
+              className="inline-flex w-full justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black md:w-auto"
             >
               Contact Me
             </motion.a>
 
             <Link
               href="#projects"
-              className="group relative inline-flex w-full justify-center overflow-hidden rounded-full border border-white/30 bg-white/5 px-6 py-3 text-sm font-semibold text-zinc-100 backdrop-blur-xl sm:w-auto"
+              className="group relative inline-flex w-full justify-center overflow-hidden rounded-full border border-white/30 bg-white/5 px-6 py-3 text-sm font-semibold text-zinc-100 backdrop-blur-xl md:w-auto"
             >
               <span className="absolute inset-0 -z-10 translate-y-full bg-zinc-200/10 transition-transform duration-300 group-hover:translate-y-0" />
               Show Projects
@@ -162,7 +162,7 @@ export function HeroOverlay() {
             <a
               href="/Jerome-CV.pdf"
               download
-              className="group relative inline-flex w-full justify-center px-5 py-3 text-sm font-semibold text-zinc-200 sm:w-auto"
+              className="group relative inline-flex w-full justify-center px-5 py-3 text-sm font-semibold text-zinc-200 md:w-auto"
             >
               Download CV
               <span className="absolute bottom-2 left-5 right-5 h-px origin-left scale-x-0 bg-zinc-100 transition-transform duration-300 group-hover:scale-x-100" />
