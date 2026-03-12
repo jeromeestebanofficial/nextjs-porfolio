@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   AnimatePresence,
   motion,
@@ -19,10 +20,9 @@ import {
   HeartPulse,
   Home,
   Lock,
-  Unlock,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 
 type TechLogo = {
   name: string;
@@ -391,12 +391,6 @@ function ProjectCard({
   const [previewSrc, setPreviewSrc] = useState<string | null>(hasSlides ? project.images![0] : null);
   const [useFallback, setUseFallback] = useState(!hasSlides);
 
-  useEffect(() => {
-    const nextHasSlides = Boolean(project.images && project.images.length > 0);
-    setPreviewSrc(nextHasSlides ? project.images![0] : null);
-    setUseFallback(!nextHasSlides);
-  }, [project.images]);
-
   const imageParallaxX = useTransform(rotateY, [-5, 5], [-12, 12]);
   const imageParallaxY = useTransform(rotateX, [-5, 5], [10, -10]);
 
@@ -471,11 +465,14 @@ function ProjectCard({
           >
             {!useFallback && previewSrc ? (
               <>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={previewSrc}
                   alt={`${project.title} preview`}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                  quality={68}
                   className="absolute inset-0 z-[1] h-full w-full object-cover opacity-95"
+                  loading="lazy"
                   onError={() => {
                     setPreviewSrc(null);
                     setUseFallback(true);
@@ -500,6 +497,8 @@ function ProjectCard({
                   src={tool.logo}
                   alt={`${tool.name} logo`}
                   className="h-3.5 w-3.5 object-contain grayscale brightness-150"
+                  loading="lazy"
+                  decoding="async"
                 />
                 {tool.name}
               </span>
@@ -564,10 +563,6 @@ function ProjectModal({
   const hasSlides = slides.length > 0;
   const [modalFallback, setModalFallback] = useState(!hasSlides);
 
-  useEffect(() => {
-    setModalFallback(!hasSlides);
-  }, [hasSlides, project.title]);
-
   return (
     <motion.div
       className="fixed inset-0 z-[120] flex items-start justify-center overflow-y-auto bg-black/70 p-3 backdrop-blur-md md:items-center md:p-4"
@@ -611,17 +606,25 @@ function ProjectModal({
             <div className="relative h-48 w-full sm:h-72">
               {!modalFallback && currentSlide ? (
                 <AnimatePresence mode="wait">
-                  <motion.img
+                  <motion.div
                     key={currentSlide}
-                    src={currentSlide}
-                    alt={`${project.title} slide ${slideIndex + 1}`}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    className="absolute inset-0"
                     initial={{ opacity: 0, scale: 1.02 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.995 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
-                    onError={() => setModalFallback(true)}
-                  />
+                  >
+                    <Image
+                      src={currentSlide}
+                      alt={`${project.title} slide ${slideIndex + 1}`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 768px"
+                      quality={72}
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading="lazy"
+                      onError={() => setModalFallback(true)}
+                    />
+                  </motion.div>
                 </AnimatePresence>
               ) : (
                 <DefaultProjectArtwork project={project} />
@@ -675,6 +678,8 @@ function ProjectModal({
                   src={tool.logo}
                   alt={`${tool.name} logo`}
                   className="h-3.5 w-3.5 object-contain grayscale brightness-150"
+                  loading="lazy"
+                  decoding="async"
                 />
                 {tool.name}
               </span>
@@ -850,6 +855,7 @@ export function Projects() {
       <AnimatePresence>
         {activeProject ? (
           <ProjectModal
+            key={activeProject.title}
             project={activeProject}
             slideIndex={activeSlide}
             onClose={closeProject}
