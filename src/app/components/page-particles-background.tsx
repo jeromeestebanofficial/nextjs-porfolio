@@ -13,10 +13,44 @@ type Particle = {
 };
 
 const DOT_COLOR = "rgba(230,230,230,0.75)";
-const LINE_COLOR = "rgba(180,180,180,0.28)";
-const PROXIMITY = 128;
-const DENSITY = 12000;
-const DOT_RADIUS = 1.15;
+const NEIGHBOR_OFFSETS = [
+  [-1, -1],
+  [0, -1],
+  [1, -1],
+  [-1, 0],
+  [0, 0],
+  [1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
+] as const;
+
+type ParticleSettings = {
+  proximity: number;
+  density: number;
+  dotRadius: number;
+  targetFps: number;
+  drawLines: boolean;
+  dprCap: number;
+};
+
+const DEFAULT_SETTINGS: ParticleSettings = {
+  proximity: 118,
+  density: 16000,
+  dotRadius: 1.05,
+  targetFps: 48,
+  drawLines: true,
+  dprCap: 1.45,
+};
+
+const LOW_POWER_SETTINGS: ParticleSettings = {
+  proximity: 92,
+  density: 24000,
+  dotRadius: 0.95,
+  targetFps: 30,
+  drawLines: false,
+  dprCap: 1.2,
+};
 
 export function PageParticlesBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -36,6 +70,20 @@ export function PageParticlesBackground() {
     let width = 0;
     let height = 0;
     let particles: Particle[] = [];
+    let lastPaint = 0;
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
+    const hardwareThreads = navigator.hardwareConcurrency ?? 4;
+    const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 4;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    const lowPowerDevice = coarsePointer || hardwareThreads <= 4 || memory <= 4;
+    const settings = lowPowerDevice ? LOW_POWER_SETTINGS : DEFAULT_SETTINGS;
+    const frameInterval = 1000 / settings.targetFps;
 
     const pointer = {
       x: window.innerWidth / 2,
@@ -58,7 +106,7 @@ export function PageParticlesBackground() {
     };
 
     const setup = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.6);
+      const dpr = Math.min(window.devicePixelRatio || 1, settings.dprCap);
       width = window.innerWidth;
       height = window.innerHeight;
 
@@ -68,12 +116,22 @@ export function PageParticlesBackground() {
       canvas.style.height = `${height}px`;
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const count = Math.round((width * height) / DENSITY);
+      const count = Math.max(10, Math.round((width * height) / settings.density));
       particles = Array.from({ length: count }, () => createParticle());
     };
 
-    const draw = () => {
+    const draw = (timestamp: number) => {
+      if (timestamp - lastPaint < frameInterval) {
+        frameRef.current = window.requestAnimationFrame(draw);
+        return;
+      }
+      lastPaint = timestamp;
       context.clearRect(0, 0, width, height);
+      const projected = new Array<{ x: number; y: number; cellX: number; cellY: number }>(
+        particles.length,
+      );
+      const grid = new Map<string, number[]>();
+      const cellSize = settings.proximity;
 
       for (let i = 0; i < particles.length; i += 1) {
         const p = particles[i];
@@ -97,34 +155,62 @@ export function PageParticlesBackground() {
           p.offsetX *= 0.94;
           p.offsetY *= 0.94;
         }
-      }
-
-      for (let i = 0; i < particles.length; i += 1) {
-        const p1 = particles[i];
-        const x1 = p1.x + p1.offsetX;
-        const y1 = p1.y + p1.offsetY;
+        const x = p.x + p.offsetX;
+        const y = p.y + p.offsetY;
+        const cellX = Math.floor(x / cellSize);
+        const cellY = Math.floor(y / cellSize);
+        const cellKey = `${cellX},${cellY}`;
+        const bucket = grid.get(cellKey);
+        if (bucket) {
+          bucket.push(i);
+        } else {
+          grid.set(cellKey, [i]);
+        }
+        projected[i] = { x, y, cellX, cellY };
 
         context.beginPath();
         context.fillStyle = DOT_COLOR;
-        context.arc(x1, y1, DOT_RADIUS, 0, Math.PI * 2);
+        context.arc(x, y, settings.dotRadius, 0, Math.PI * 2);
         context.fill();
+      }
 
-        for (let j = i + 1; j < particles.length; j += 1) {
-          const p2 = particles[j];
-          const x2 = p2.x + p2.offsetX;
-          const y2 = p2.y + p2.offsetY;
-          const dx = x1 - x2;
-          const dy = y1 - y2;
-          const dist = Math.hypot(dx, dy);
+      if (settings.drawLines) {
+        for (let i = 0; i < projected.length; i += 1) {
+          const p1 = projected[i];
+          if (!p1) {
+            continue;
+          }
 
-          if (dist < PROXIMITY) {
-            const alpha = 1 - dist / PROXIMITY;
-            context.beginPath();
-            context.moveTo(x1, y1);
-            context.lineTo(x2, y2);
-            context.strokeStyle = LINE_COLOR.replace("0.28", `${0.28 * alpha}`);
-            context.lineWidth = 1;
-            context.stroke();
+          for (const [offsetX, offsetY] of NEIGHBOR_OFFSETS) {
+            const neighborKey = `${p1.cellX + offsetX},${p1.cellY + offsetY}`;
+            const bucket = grid.get(neighborKey);
+            if (!bucket) {
+              continue;
+            }
+
+            for (let k = 0; k < bucket.length; k += 1) {
+              const j = bucket[k];
+              if (j <= i) {
+                continue;
+              }
+              const p2 = projected[j];
+              if (!p2) {
+                continue;
+              }
+              const dx = p1.x - p2.x;
+              const dy = p1.y - p2.y;
+              const dist = Math.hypot(dx, dy);
+              if (dist >= settings.proximity) {
+                continue;
+              }
+              const alpha = 1 - dist / settings.proximity;
+              context.beginPath();
+              context.moveTo(p1.x, p1.y);
+              context.lineTo(p2.x, p2.y);
+              context.strokeStyle = `rgba(180,180,180,${(0.26 * alpha).toFixed(3)})`;
+              context.lineWidth = 1;
+              context.stroke();
+            }
           }
         }
       }
@@ -132,13 +218,13 @@ export function PageParticlesBackground() {
       frameRef.current = window.requestAnimationFrame(draw);
     };
 
-    const onMouseMove = (event: MouseEvent) => {
+    const onPointerMove = (event: PointerEvent) => {
       pointer.active = true;
       pointer.x = event.clientX;
       pointer.y = event.clientY;
     };
 
-    const onMouseLeave = () => {
+    const onPointerLeave = () => {
       pointer.active = false;
     };
 
@@ -147,14 +233,14 @@ export function PageParticlesBackground() {
     setup();
     frameRef.current = window.requestAnimationFrame(draw);
 
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseleave", onMouseLeave);
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerleave", onPointerLeave);
     window.addEventListener("resize", onResize);
 
     return () => {
       window.cancelAnimationFrame(frameRef.current);
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseleave", onMouseLeave);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerleave", onPointerLeave);
       window.removeEventListener("resize", onResize);
     };
   }, []);

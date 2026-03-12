@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Github, Linkedin, MessageCircle } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
 
 const containerVariants: Variants = {
@@ -67,6 +67,8 @@ function SocialIconButton({
 }
 
 export function HeroOverlay() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <div className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 md:px-10">
       <div className="grid min-h-[74svh] grid-cols-1 items-center lg:min-h-[78svh] lg:grid-cols-2">
@@ -79,14 +81,18 @@ export function HeroOverlay() {
           <motion.div
             aria-hidden
             className="pointer-events-none absolute -left-14 -top-8 h-40 w-40 rounded-full bg-white/12 blur-3xl"
-            animate={{ x: [0, 30, 0], y: [0, 20, 0], opacity: [0.5, 0.85, 0.5] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            animate={
+              shouldReduceMotion ? { opacity: 0.55 } : { x: [0, 30, 0], y: [0, 20, 0], opacity: [0.5, 0.85, 0.5] }
+            }
+            transition={shouldReduceMotion ? undefined : { duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
             aria-hidden
             className="pointer-events-none absolute -bottom-8 right-2 h-40 w-40 rounded-full bg-zinc-200/10 blur-3xl"
-            animate={{ x: [0, -24, 0], y: [0, -18, 0], opacity: [0.35, 0.7, 0.35] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            animate={
+              shouldReduceMotion ? { opacity: 0.4 } : { x: [0, -24, 0], y: [0, -18, 0], opacity: [0.35, 0.7, 0.35] }
+            }
+            transition={shouldReduceMotion ? undefined : { duration: 10, repeat: Infinity, ease: "easeInOut" }}
           />
 
           <motion.h1
@@ -138,14 +144,18 @@ export function HeroOverlay() {
           >
             <motion.a
               href="#contact"
-              animate={{
-                boxShadow: [
-                  "0 0 0px rgba(255,255,255,0.0)",
-                  "0 0 24px rgba(255,255,255,0.45)",
-                  "0 0 0px rgba(255,255,255,0.0)",
-                ],
-              }}
-              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+              animate={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      boxShadow: [
+                        "0 0 0px rgba(255,255,255,0.0)",
+                        "0 0 24px rgba(255,255,255,0.45)",
+                        "0 0 0px rgba(255,255,255,0.0)",
+                      ],
+                    }
+              }
+              transition={shouldReduceMotion ? undefined : { duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
               className="inline-flex w-full justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-black md:w-auto"
             >
               Contact Me
@@ -178,8 +188,8 @@ export function HeroOverlay() {
         >
           <motion.div
             aria-hidden
-            animate={{ y: [0, -10, 0], rotate: [0, 1.2, 0] }}
-            transition={{ duration: 8.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={shouldReduceMotion ? undefined : { y: [0, -10, 0], rotate: [0, 1.2, 0] }}
+            transition={shouldReduceMotion ? undefined : { duration: 8.5, repeat: Infinity, ease: "easeInOut" }}
             className="relative h-[370px] w-[320px]"
           >
             <div
@@ -192,8 +202,8 @@ export function HeroOverlay() {
             </div>
 
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6.2, repeat: Infinity, ease: "easeInOut" }}
+              animate={shouldReduceMotion ? undefined : { y: [0, -8, 0] }}
+              transition={shouldReduceMotion ? undefined : { duration: 6.2, repeat: Infinity, ease: "easeInOut" }}
               className="absolute inset-0 flex items-center justify-center"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -201,6 +211,8 @@ export function HeroOverlay() {
                 src="/2.gif"
                 alt="Developer animation"
                 className="h-auto w-[160%] max-w-none object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.45)]"
+                loading="lazy"
+                decoding="async"
               />
             </motion.div>
           </motion.div>

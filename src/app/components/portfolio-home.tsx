@@ -161,6 +161,12 @@ export function PortfolioHome() {
   const [activeSection, setActiveSection] = useState<SectionId>("hero");
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+    if (prefersReducedMotion || coarsePointer) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       smoothWheel: true,
@@ -201,12 +207,24 @@ export function PortfolioHome() {
       setActiveSection("hero");
     };
 
+    let ticking = false;
+    const handleScroll = () => {
+      if (ticking) {
+        return;
+      }
+      ticking = true;
+      window.requestAnimationFrame(() => {
+        updateActiveSection();
+        ticking = false;
+      });
+    };
+
     updateActiveSection();
-    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", updateActiveSection);
 
     return () => {
-      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", updateActiveSection);
     };
   }, []);
