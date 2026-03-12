@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type Variants } from "framer-motion";
 import { useState, type CSSProperties, type MouseEvent } from "react";
 
 type ToolTile = {
@@ -61,7 +61,7 @@ const TOOLS: ToolTile[] = [
   },
 ];
 
-const gridVariants = {
+const gridVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -69,7 +69,7 @@ const gridVariants = {
   },
 };
 
-const tileVariants = {
+const tileVariants: Variants = {
   hidden: { opacity: 0, scale: 0.9, y: 18 },
   visible: {
     opacity: 1,

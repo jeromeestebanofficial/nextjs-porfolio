@@ -16,7 +16,7 @@ import {
   ServerCog,
   Sparkles,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
   useEffect,
   useMemo,
@@ -50,7 +50,7 @@ const tools: TechTool[] = [
   { name: "GitHub", icon: Github, short: "GH" },
 ];
 
-const sectionVariant = {
+const sectionVariant: Variants = {
   hidden: { opacity: 0, y: 44 },
   visible: {
     opacity: 1,
@@ -64,7 +64,7 @@ const sectionVariant = {
   },
 };
 
-const itemVariant = {
+const itemVariant: Variants = {
   hidden: { opacity: 0, scale: 0.95, y: 18 },
   visible: {
     opacity: 1,

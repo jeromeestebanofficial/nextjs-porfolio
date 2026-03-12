@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { Check, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 
@@ -14,20 +14,20 @@ const OPTIONS: ServiceOption[] = [
   "Other",
 ];
 
-const pageVariants = {
+const pageVariants: Variants = {
   initial: { opacity: 0, x: 36 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.36, ease: "easeOut" } },
   exit: { opacity: 0, x: -36, transition: { duration: 0.28, ease: "easeInOut" } },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   initial: {},
   animate: {
     transition: { staggerChildren: 0.08, delayChildren: 0.08 },
   },
 };
 
-const staggerItem = {
+const staggerItem: Variants = {
   initial: { opacity: 0, y: 12, scale: 0.96 },
   animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.32, ease: "easeOut" } },
 };
