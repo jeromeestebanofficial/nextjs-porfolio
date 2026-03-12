@@ -75,10 +75,10 @@ const itemVariant: Variants = {
 };
 
 const NAV_ITEMS = [
-  { id: "hero", label: "Home" },
-  { id: "tools", label: "Tech Tools" },
-  { id: "projects", label: "Projects" },
-  { id: "contact", label: "Contact" },
+  { id: "hero", label: "Home", shortLabel: "Home" },
+  { id: "tools", label: "Tech Tools", shortLabel: "Tools" },
+  { id: "projects", label: "Projects", shortLabel: "Work" },
+  { id: "contact", label: "Contact", shortLabel: "Contact" },
 ] as const;
 
 type SectionId = (typeof NAV_ITEMS)[number]["id"];
@@ -219,16 +219,16 @@ export function PortfolioHome() {
       <div className="noise-overlay pointer-events-none fixed inset-0 z-40 opacity-30" />
 
       <div className="relative z-10">
-        <header className="pointer-events-none fixed inset-x-0 top-3 z-50 flex justify-center px-3 sm:top-4 sm:px-4">
+        <header className="pointer-events-none fixed inset-x-0 top-2.5 z-50 flex justify-center px-2 sm:top-4 sm:px-4">
           <div className="pointer-events-auto max-w-full overflow-x-auto">
-            <nav className="inline-flex min-w-max items-center gap-1 rounded-full border border-white/15 bg-black/45 p-1.5 backdrop-blur-2xl">
+            <nav className="inline-flex min-w-max items-center gap-1 rounded-full border border-white/15 bg-black/45 p-1 backdrop-blur-2xl sm:p-1.5">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <Link
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`relative rounded-full px-2.5 py-1.5 text-[11px] font-medium transition-colors sm:px-3 sm:text-sm ${
+                  className={`relative rounded-full px-2 py-1.5 text-[10px] font-medium transition-colors sm:px-3 sm:text-sm ${
                     isActive ? "text-white" : "text-zinc-200 hover:text-white"
                   }`}
                 >
@@ -239,7 +239,8 @@ export function PortfolioHome() {
                       transition={{ type: "spring", stiffness: 320, damping: 28 }}
                     />
                   ) : null}
-                  {item.label}
+                  <span className="sm:hidden">{item.shortLabel}</span>
+                  <span className="hidden sm:inline">{item.label}</span>
                 </Link>
               );
             })}
@@ -249,7 +250,7 @@ export function PortfolioHome() {
 
         <section
           id="hero"
-          className="relative flex min-h-[100svh] w-full scroll-mt-24 items-center justify-center overflow-hidden px-4 py-10 sm:px-8"
+          className="relative flex min-h-[100svh] w-full scroll-mt-24 items-center justify-center overflow-hidden px-4 pb-10 pt-16 sm:px-8 sm:pt-10"
         >
           <div className="pointer-events-none absolute inset-0 z-[1] bg-black/35" />
           <HeroOverlay />

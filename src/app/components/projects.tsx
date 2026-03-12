@@ -417,7 +417,7 @@ function ProjectCard({
 
   return (
     <motion.article
-      className="project-card relative min-h-[430px] overflow-visible rounded-3xl border border-white/10 bg-[rgba(16,16,16,0.6)] p-4 backdrop-blur-2xl hover:cursor-pointer sm:p-5"
+      className="project-card relative min-h-[420px] overflow-visible rounded-3xl border border-white/10 bg-[rgba(16,16,16,0.6)] p-4 backdrop-blur-2xl hover:cursor-pointer sm:min-h-[430px] sm:p-5"
       style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
       onMouseMove={handleMove}
       onMouseLeave={reset}
@@ -506,12 +506,14 @@ function ProjectCard({
             ))}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-200 backdrop-blur-xl">
+          <div className="flex flex-col items-start gap-2 pt-1 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+            <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-200 backdrop-blur-xl">
               <Lock className="h-3.5 w-3.5" />
-              {project.repoVisibility === "private"
-                ? project.privateNote ?? "Private repository"
-                : "Public repository"}
+              <span className="truncate">
+                {project.repoVisibility === "private"
+                  ? project.privateNote ?? "Private repository"
+                  : "Public repository"}
+              </span>
             </span>
 
             {project.websiteUrl ? (
@@ -521,18 +523,18 @@ function ProjectCard({
                 rel="noreferrer"
                 onClick={(event) => event.stopPropagation()}
                 onKeyDown={(event) => event.stopPropagation()}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/20"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/20 sm:w-auto"
               >
                 <Globe className="h-3.5 w-3.5" />
                 Live Website
               </a>
             ) : (
-              <span className="group relative inline-flex">
-                <span className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-zinc-500 backdrop-blur-xl">
+              <span className="group relative inline-flex w-full sm:w-auto">
+                <span className="inline-flex w-full cursor-not-allowed items-center justify-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-zinc-500 backdrop-blur-xl sm:w-auto">
                   <Globe className="h-3.5 w-3.5" />
                   Live Preview
                 </span>
-                <span className="pointer-events-none absolute -top-9 left-1/2 z-[95] -translate-x-1/2 whitespace-nowrap rounded-md border border-white/20 bg-black/90 px-2 py-1 text-[11px] font-medium text-zinc-100 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:opacity-100">
+                <span className="pointer-events-none absolute -top-9 left-1/2 z-[95] hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-white/20 bg-black/90 px-2 py-1 text-[11px] font-medium text-zinc-100 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:opacity-100 sm:block">
                   Preview is not available
                 </span>
               </span>
@@ -662,11 +664,11 @@ function ProjectModal({
             </div>
           ) : null}
 
-          <div className="mt-5 flex flex-wrap gap-2.5">
+          <div className="mt-5 flex flex-wrap gap-2">
             {project.tools.map((tool) => (
               <span
                 key={`${project.title}-modal-${tool.name}`}
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/20 px-2.5 py-1 text-xs text-zinc-300"
+                className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-white/20 px-2.5 py-1 text-xs text-zinc-300"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -679,19 +681,19 @@ function ProjectModal({
             ))}
           </div>
 
-          <div className="mt-5 flex flex-wrap items-center gap-2.5">
+          <div className="mt-5 flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2.5">
             {project.repoVisibility === "public" && project.repoUrl ? (
               <a
                 href={project.repoUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18 sm:w-auto"
               >
                 <Github className="h-4 w-4" />
                 GitHub
               </a>
             ) : (
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-200 backdrop-blur-xl">
+              <span className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-200 backdrop-blur-xl sm:w-auto">
                 <Lock className="h-4 w-4" />
                 {project.privateNote ?? "Private repository"}
               </span>
@@ -702,18 +704,18 @@ function ProjectModal({
                 href={project.websiteUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-zinc-100 backdrop-blur-xl transition-colors hover:bg-white/18 sm:w-auto"
               >
                 <Globe className="h-4 w-4" />
                 Live Website
               </a>
             ) : (
-              <span className="group relative inline-flex">
-                <span className="inline-flex cursor-not-allowed items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-zinc-500 backdrop-blur-xl">
+              <span className="group relative inline-flex w-full sm:w-auto">
+                <span className="inline-flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-zinc-500 backdrop-blur-xl sm:w-auto">
                   <Globe className="h-4 w-4" />
                   Live Preview
                 </span>
-                <span className="pointer-events-none absolute -top-10 left-1/2 z-[95] -translate-x-1/2 whitespace-nowrap rounded-md border border-white/20 bg-black/90 px-2.5 py-1 text-[11px] font-medium text-zinc-100 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:opacity-100">
+                <span className="pointer-events-none absolute -top-10 left-1/2 z-[95] hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-white/20 bg-black/90 px-2.5 py-1 text-[11px] font-medium text-zinc-100 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-all duration-200 group-hover:-translate-y-0.5 group-hover:opacity-100 sm:block">
                   Preview is not available
                 </span>
               </span>
