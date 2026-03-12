@@ -48,7 +48,7 @@ function SocialIconButton({
         hover: { scale: 1.12 },
       }}
       transition={{ type: "spring", stiffness: 260, damping: 18 }}
-      className="group relative rounded-full border border-white/20 bg-white/10 p-3 text-zinc-100 backdrop-blur-xl transition-colors hover:text-white"
+      className="group relative rounded-full border border-white/20 bg-white/10 p-2.5 text-zinc-100 backdrop-blur-xl transition-colors hover:text-white sm:p-3"
       aria-label={label}
     >
       {children}
@@ -58,7 +58,7 @@ function SocialIconButton({
           hover: { opacity: 1, y: 0, scale: 1 },
         }}
         transition={{ duration: 0.2, ease: "easeOut" }}
-        className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-md border border-white/20 bg-black/75 px-2.5 py-1 text-[11px] font-medium tracking-wide text-zinc-100 shadow-[0_8px_25px_rgba(0,0,0,0.35)] backdrop-blur-xl"
+        className="pointer-events-none absolute -top-10 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-md border border-white/20 bg-black/75 px-2.5 py-1 text-[11px] font-medium tracking-wide text-zinc-100 shadow-[0_8px_25px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:block"
       >
         {label}
       </motion.span>
@@ -91,7 +91,7 @@ export function HeroOverlay() {
 
           <motion.h1
             variants={itemVariants}
-            className="relative z-10 mt-1 text-3xl font-black leading-[1.03] tracking-tight text-white sm:text-6xl md:text-7xl"
+            className="relative z-10 mt-1 text-[2rem] font-black leading-[1.03] tracking-tight text-white sm:text-6xl md:text-7xl"
           >
             Hi, I&apos;m{" "}
             <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
@@ -101,7 +101,7 @@ export function HeroOverlay() {
 
           <motion.p
             variants={itemVariants}
-            className="relative z-10 mt-4 max-w-xl text-sm text-zinc-300 sm:text-base md:text-lg"
+            className="relative z-10 mt-4 max-w-xl text-sm leading-relaxed text-zinc-300 sm:text-base md:text-lg"
           >
             Full-Stack Developer with a passion for building clean, functional web applications
             and a never-ending curiosity for how things work under the hood.
@@ -111,19 +111,19 @@ export function HeroOverlay() {
             variants={itemVariants}
             className="relative z-10 mt-6 flex w-full flex-col items-start gap-3 sm:flex-row sm:flex-wrap sm:items-center"
           >
-            <div className="inline-flex max-w-full items-center gap-3 rounded-full border border-white/20 bg-white/8 px-3 py-2 backdrop-blur-xl">
+            <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/20 bg-white/8 px-2.5 py-2 backdrop-blur-xl sm:gap-3 sm:px-3">
               <SocialIconButton href="https://github.com" label="GitHub">
-                <Github className="h-5 w-5" />
+                <Github className="h-4 w-4 sm:h-5 sm:w-5" />
               </SocialIconButton>
               <SocialIconButton href="https://linkedin.com" label="LinkedIn">
-                <Linkedin className="h-5 w-5" />
+                <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
               </SocialIconButton>
               <SocialIconButton href="https://discord.com/users/YOUR_DISCORD_ID" label="Discord">
-                <MessageCircle className="h-5 w-5" />
+                <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               </SocialIconButton>
             </div>
 
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/8 px-3 py-2 text-[11px] leading-relaxed text-zinc-200 backdrop-blur-xl sm:text-sm">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-2xl border border-white/20 bg-white/8 px-3 py-2 text-[10px] leading-relaxed text-zinc-200 backdrop-blur-xl sm:rounded-full sm:text-sm">
               <span className="relative inline-flex h-2.5 w-2.5">
                 <span className="absolute inset-0 rounded-full bg-emerald-400/90" />
                 <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400/55" />

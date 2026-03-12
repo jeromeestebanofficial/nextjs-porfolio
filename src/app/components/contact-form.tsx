@@ -152,7 +152,7 @@ export function ContactForm() {
         >
           <div className="sheen-layer pointer-events-none absolute inset-[-35%]" />
           <div className="relative z-10">
-            <h2 className="text-2xl font-semibold text-white sm:text-3xl">Contact Me</h2>
+            <h2 className="text-xl font-semibold text-white sm:text-3xl">Contact Me</h2>
             <p className="mt-2 text-sm text-zinc-400 sm:text-base">
               Tell me about your idea, and I will help turn it into a working product.
             </p>
@@ -185,7 +185,7 @@ export function ContactForm() {
                             variants={staggerItem}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setSelectedService(option)}
-                            className={`rounded-2xl border px-4 py-4 text-left text-sm transition-all duration-200 ${
+                            className={`rounded-2xl border px-4 py-3 text-left text-sm leading-snug transition-all duration-200 sm:py-4 ${
                               active
                                 ? "border-cyan-400/80 bg-cyan-400/10 text-zinc-100 shadow-[0_0_0_2px_rgba(6,182,212,0.16),0_0_28px_rgba(6,182,212,0.25)]"
                                 : "border-white/15 bg-white/5 text-zinc-300 hover:border-white/30 hover:text-zinc-100"
