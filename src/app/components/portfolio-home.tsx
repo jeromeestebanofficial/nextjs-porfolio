@@ -2,53 +2,15 @@
 
 import Link from "next/link";
 import Lenis from "lenis";
-import {
-  Bot,
-  Braces,
-  Code2,
-  Container,
-  Database,
-  FileCode2,
-  Github,
-  Layers3,
-  Network,
-  Palette,
-  ServerCog,
-  Sparkles,
-} from "lucide-react";
 import { motion, type Variants } from "framer-motion";
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type CSSProperties,
-  type MouseEvent,
-} from "react";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
+import { Home, Layers, FolderKanban, Mail, Brain } from "lucide-react";
 import { HeroOverlay } from "./hero-overlay";
-import { Projects } from "./projects";
+import { ProjectSection } from "./project-section";
 import { ContactForm } from "./contact-form";
 import { PageParticlesBackground } from "./page-particles-background";
-
-type TechTool = {
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  short: string;
-};
-
-const tools: TechTool[] = [
-  { name: "HTML", icon: FileCode2, short: "HT" },
-  { name: "CSS", icon: Palette, short: "CS" },
-  { name: "JavaScript", icon: Braces, short: "JS" },
-  { name: "Next.js", icon: Sparkles, short: "NX" },
-  { name: "Node.js", icon: ServerCog, short: "ND" },
-  { name: "Express.js", icon: Network, short: "EX" },
-  { name: "PHP", icon: Code2, short: "PH" },
-  { name: "Laravel", icon: Layers3, short: "LV" },
-  { name: "MySQL", icon: Database, short: "MY" },
-  { name: "Python", icon: Bot, short: "PY" },
-  { name: "Docker", icon: Container, short: "DK" },
-  { name: "GitHub", icon: Github, short: "GH" },
-];
+import { TechHub3D } from "./tech-hub-3d";
+import { ThinkingProcessLoop } from "./thinking-process-loop";
 
 const sectionVariant: Variants = {
   hidden: { opacity: 0, y: 44 },
@@ -75,44 +37,20 @@ const itemVariant: Variants = {
 };
 
 const NAV_ITEMS = [
-  { id: "hero", label: "Home", shortLabel: "Home" },
-  { id: "tools", label: "Tech Tools", shortLabel: "Tools" },
-  { id: "projects", label: "Projects", shortLabel: "Work" },
-  { id: "contact", label: "Contact", shortLabel: "Contact" },
+  { id: "hero", label: "Home", shortLabel: "Home", icon: Home },
+  { id: "tools", label: "Tech Stack", shortLabel: "Stack", icon: Layers },
+  { id: "thinking", label: "Process", shortLabel: "Process", icon: Brain },
+  { id: "projects", label: "Projects", shortLabel: "Work", icon: FolderKanban },
+  { id: "contact", label: "Contact", shortLabel: "Contact", icon: Mail },
 ] as const;
 
 type SectionId = (typeof NAV_ITEMS)[number]["id"];
-
-function useSpotlight() {
-  const [style, setStyle] = useState<CSSProperties>({
-    "--spot-x": "50%",
-    "--spot-y": "50%",
-    "--spot-opacity": 0,
-  } as CSSProperties);
-
-  const onMouseMove = (event: MouseEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-    setStyle({
-      "--spot-x": `${x}%`,
-      "--spot-y": `${y}%`,
-      "--spot-opacity": 1,
-    } as CSSProperties);
-  };
-
-  const onMouseLeave = () => {
-    setStyle((previous) => ({ ...previous, "--spot-opacity": 0 } as CSSProperties));
-  };
-
-  return { style, onMouseMove, onMouseLeave };
-}
 
 function FlipHeading({ text }: { text: string }) {
   const chars = useMemo(() => text.split(""), [text]);
 
   return (
-    <h2 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+    <h2 className="text-[1.9rem] font-black tracking-tight text-white sm:text-4xl md:text-[2.5rem]">
       {chars.map((char, index) => (
         <motion.span
           key={`${char}-${index}`}
@@ -127,33 +65,6 @@ function FlipHeading({ text }: { text: string }) {
         </motion.span>
       ))}
     </h2>
-  );
-}
-
-function BentoTile({ tool }: { tool: TechTool }) {
-  const { style, onMouseLeave, onMouseMove } = useSpotlight();
-  const Icon = tool.icon;
-
-  return (
-    <motion.article
-      className="bento-tile"
-      style={style}
-      variants={itemVariant}
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-    >
-      <div className="relative z-10 flex items-center gap-4">
-        <div className="bento-icon-chip rounded-xl border border-white/20 bg-white/10 p-3 text-zinc-100">
-          <Icon className="h-5 w-5" />
-        </div>
-        <div>
-          <p className="text-base font-medium text-zinc-100">{tool.name}</p>
-          <p className="mt-0.5 text-xs tracking-[0.2em] text-zinc-400">{tool.short}</p>
-        </div>
-      </div>
-    </motion.article>
   );
 }
 
@@ -186,6 +97,18 @@ export function PortfolioHome() {
       lenis.destroy();
     };
   }, []);
+
+  const handleNavClick = (event: MouseEvent<HTMLAnchorElement>, sectionId: SectionId) => {
+    event.preventDefault();
+    const section = document.getElementById(sectionId);
+    if (!section) {
+      return;
+    }
+    const rect = section.getBoundingClientRect();
+    const offset = window.innerHeight * 0.12; // roughly matches scroll-mt and header height
+    const targetY = rect.top + window.scrollY - offset;
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -242,11 +165,13 @@ export function PortfolioHome() {
             <nav className="inline-flex min-w-max items-center gap-1 rounded-full border border-white/15 bg-black/45 p-1 backdrop-blur-2xl sm:p-1.5">
             {NAV_ITEMS.map((item) => {
               const isActive = activeSection === item.id;
+              const Icon = item.icon;
               return (
                 <Link
                   key={item.id}
                   href={`#${item.id}`}
-                  className={`relative rounded-full px-2 py-1.5 text-[10px] font-medium transition-colors sm:px-3 sm:text-sm ${
+                  onClick={(event) => handleNavClick(event, item.id)}
+                  className={`relative inline-flex items-center gap-1.5 rounded-full px-2 py-1.5 text-[10px] font-medium transition-colors sm:px-3 sm:text-sm ${
                     isActive ? "text-white" : "text-zinc-200 hover:text-white"
                   }`}
                 >
@@ -257,6 +182,7 @@ export function PortfolioHome() {
                       transition={{ type: "spring", stiffness: 320, damping: 28 }}
                     />
                   ) : null}
+                  <Icon className="h-3.5 w-3.5 opacity-90 sm:h-4 sm:w-4" aria-hidden="true" />
                   <span className="sm:hidden">{item.shortLabel}</span>
                   <span className="hidden sm:inline">{item.label}</span>
                 </Link>
@@ -283,22 +209,62 @@ export function PortfolioHome() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.24 }}
           >
-            <motion.div variants={itemVariant}>
-              <FlipHeading text="Tech Tools" />
-              <p className="mt-2 max-w-2xl text-sm text-zinc-400 sm:text-base">
-                The technologies I use to bring ideas to life. From frontend design to backend
-                logic, these are the tools I trust to build stable and helpful web applications.
-              </p>
-            </motion.div>
-            <motion.div className="bento-grid" variants={sectionVariant}>
-              {tools.map((tool) => (
-                <BentoTile key={tool.name} tool={tool} />
-              ))}
-            </motion.div>
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center lg:gap-10">
+              <motion.div variants={itemVariant} className="order-2 lg:order-1 h-full">
+                <TechHub3D />
+              </motion.div>
+
+              <motion.div variants={itemVariant} className="order-1 lg:order-2">
+                <div className="mt-4">
+                  <FlipHeading text="Tech Stack &amp; Tools" />
+                  <p className="mt-3 max-w-xl text-sm text-zinc-400 sm:text-base">
+                    The technologies I work with to turn ideas into working web applications, always
+                    learning and steadily improving.
+                  </p>
+                </div>
+
+                <div className="mt-5 grid gap-3">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400">
+                      Frontend & UX
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-200">
+                      I build interfaces using HTML, CSS, and JavaScript as my core foundation,
+                      with Bootstrap and Bulma for responsive layouts. I use Next.js to create
+                      fast, structured web experiences, and try to keep designs clean, accessible,
+                      and easy to navigate.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400">
+                      Backend & DevOps
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-200">
+                      For server-side work, I use Node.js, Express, PHP, and Laravel to build and
+                      manage APIs. MySQL handles my data, and Python comes in handy for scripting
+                      and utilities. I use Docker to keep environments consistent and GitHub for
+                      version control and collaboration.
+                    </p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400">
+                      Dev Tools I Rely On
+                    </p>
+                    <p className="mt-1 text-sm text-zinc-200">
+                      Day-to-day, I work with Postman for testing APIs, FileZilla for file
+                      transfers, and PuTTY for remote server access: small tools that quietly keep
+                      development moving.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </motion.section>
+
+          <ThinkingProcessLoop />
         </div>
 
-        <Projects />
+        <ProjectSection />
 
         <ContactForm />
 
@@ -384,8 +350,7 @@ export function PortfolioHome() {
 
             <div className="mt-8 border-t border-white/10 pt-5">
               <p className="text-xs tracking-wide text-zinc-500 sm:text-sm">
-                © {new Date().getFullYear()} Jerome. All rights reserved. Crafted with a modern
-                monochrome glass aesthetic.
+                © {new Date().getFullYear()} Jerome. All rights reserved.
               </p>
             </div>
           </div>

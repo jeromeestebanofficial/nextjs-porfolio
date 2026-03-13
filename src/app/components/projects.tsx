@@ -22,7 +22,7 @@ import {
   Lock,
   X,
 } from "lucide-react";
-import { useRef, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 
 type TechLogo = {
   name: string;
@@ -295,7 +295,7 @@ const PROJECTS: ProjectItem[] = [
     ],
     repoVisibility: "public",
     repoUrl: "https://github.com/jeromeestebanofficial/nextjs-porfolio.git",
-    websiteUrl: "http://fantasyinthesky.vercel.app",
+    websiteUrl: "https://estebanjerome.vercel.app/",
     privateNote: "Private repository",
     fallbackTheme: "next",
   },
@@ -387,12 +387,16 @@ function ProjectCard({
   const rotateYRaw = useMotionValue(0);
   const rotateX = useSpring(rotateXRaw, { stiffness: 200, damping: 18, mass: 0.7 });
   const rotateY = useSpring(rotateYRaw, { stiffness: 200, damping: 18, mass: 0.7 });
-  const hasSlides = Boolean(project.images && project.images.length > 0);
-  const [previewSrc, setPreviewSrc] = useState<string | null>(hasSlides ? project.images![0] : null);
-  const [useFallback, setUseFallback] = useState(!hasSlides);
+  const cardSlides = (project.images ?? []).slice(0, 3);
+  const [stackSources, setStackSources] = useState<(string | null)[]>(cardSlides);
+  const [hoveredStackIndex, setHoveredStackIndex] = useState<number | null>(null);
 
   const imageParallaxX = useTransform(rotateY, [-5, 5], [-12, 12]);
   const imageParallaxY = useTransform(rotateX, [-5, 5], [10, -10]);
+
+  useEffect(() => {
+    setStackSources((project.images ?? []).slice(0, 3));
+  }, [project.images, project.title]);
 
   const handleMove = (event: MouseEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -460,30 +464,71 @@ function ProjectCard({
 
         <div className="mt-auto space-y-4">
           <motion.div
-            className="relative h-32 overflow-hidden rounded-2xl border border-white/10 bg-black/35"
+            className="relative h-40 overflow-hidden rounded-2xl border border-white/10 bg-black/35"
             style={{ x: imageParallaxX, y: imageParallaxY }}
           >
-            {!useFallback && previewSrc ? (
-              <>
-                <Image
-                  src={previewSrc}
-                  alt={`${project.title} preview`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                  quality={68}
-                  className="absolute inset-0 z-[1] h-full w-full object-cover opacity-95"
-                  loading="lazy"
-                  onError={() => {
-                    setPreviewSrc(null);
-                    setUseFallback(true);
-                  }}
-                />
-                <div className="absolute inset-0 z-[2] bg-[linear-gradient(145deg,rgba(0,0,0,0.26),rgba(0,0,0,0.05))]" />
-              </>
+            {stackSources.filter(Boolean).length > 0 ? (
+              <div className="relative z-[6] flex h-full w-full items-center justify-center">
+                {(() => {
+                  const slides = stackSources.filter((src): src is string => Boolean(src));
+                  const transforms =
+                    slides.length === 1
+                      ? ["translate(-50%, -50%) translate(0px, 6px) rotate(0deg)"]
+                      : slides.length === 2
+                        ? [
+                            "translate(-50%, -50%) translate(-58px, 10px) rotate(-9deg)",
+                            "translate(-50%, -50%) translate(58px, 10px) rotate(9deg)",
+                          ]
+                        : [
+                            "translate(-50%, -50%) translate(-82px, 12px) rotate(-11deg)",
+                            "translate(-50%, -50%) translate(0px, 0px) rotate(0deg)",
+                            "translate(-50%, -50%) translate(82px, 12px) rotate(11deg)",
+                          ];
+                  const zIndexes =
+                    slides.length === 1 ? [30] : slides.length === 2 ? [20, 25] : [20, 32, 24];
+
+                  return slides.map((src, slideIndex) => {
+                    const isHovered = hoveredStackIndex === slideIndex;
+                    const baseTransform = transforms[slideIndex] ?? transforms[0];
+                    const hoverTransform = `${baseTransform} translateY(-8px) scale(1.04)`;
+
+                    return (
+                    <div
+                      key={`${project.title}-stack-${src}-${slideIndex}`}
+                      className="group absolute left-1/2 top-1/2 h-28 w-36 overflow-hidden rounded-xl border border-white/15 bg-zinc-900 shadow-2xl"
+                      onMouseEnter={() => setHoveredStackIndex(slideIndex)}
+                      onMouseLeave={() => setHoveredStackIndex(null)}
+                      style={{
+                        transform: isHovered ? hoverTransform : baseTransform,
+                        zIndex: isHovered ? 60 : (zIndexes[slideIndex] ?? 20),
+                        transition:
+                          "transform 220ms ease, z-index 120ms ease, box-shadow 220ms ease, border-color 220ms ease",
+                      }}
+                    >
+                      <Image
+                        src={src}
+                        alt={`${project.title} preview ${slideIndex + 1}`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                        quality={68}
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        loading="lazy"
+                        onError={() =>
+                          setStackSources((previous) =>
+                            previous.map((item, index) => (index === slideIndex ? null : item)),
+                          )
+                        }
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(160deg,rgba(0,0,0,0.24),rgba(0,0,0,0.02))]" />
+                    </div>
+                    );
+                  });
+                })()}
+              </div>
             ) : (
               <DefaultProjectArtwork project={project} />
             )}
-            <div className="absolute inset-0 z-[3] bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.07),rgba(255,255,255,0.07)_1px,transparent_1px,transparent_14px),repeating-linear-gradient(90deg,rgba(255,255,255,0.05),rgba(255,255,255,0.05)_1px,transparent_1px,transparent_14px)] opacity-25" />
+            <div className="pointer-events-none absolute inset-0 z-[5] bg-[repeating-linear-gradient(0deg,rgba(255,255,255,0.06),rgba(255,255,255,0.06)_1px,transparent_1px,transparent_14px),repeating-linear-gradient(90deg,rgba(255,255,255,0.04),rgba(255,255,255,0.04)_1px,transparent_1px,transparent_14px)] opacity-20" />
           </motion.div>
 
           <div className="flex flex-wrap gap-2.5">
@@ -806,7 +851,7 @@ export function Projects() {
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.4 }}
-          className="text-2xl font-semibold text-zinc-100 sm:text-3xl"
+          className="text-[1.9rem] font-black tracking-tight text-zinc-100 sm:text-4xl md:text-[2.5rem]"
         >
           Projects
         </motion.h2>

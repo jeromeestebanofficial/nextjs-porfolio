@@ -18,8 +18,21 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Developer Portfolio",
-  description: "Modern dark glassmorphism developer portfolio homepage",
+  title: "Jerome Esteban – Full-Stack Developer Portfolio",
+  description:
+    "Full-stack developer building clean, reliable web applications with modern tooling, glassmorphism UI, and a focus on usability.",
+  metadataBase: new URL("https://estebanjerome.vercel.app"),
+  openGraph: {
+    title: "Jerome Esteban – Full-Stack Developer Portfolio",
+    description:
+      "Showcasing projects, tech stack, and a thoughtful approach to building web experiences.",
+    url: "https://estebanjerome.vercel.app",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
