@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
 type ContactPayload = {
-  service?: string;
-  projectDetails?: string;
+  category?: string;
+  date?: string;
+  time?: string;
   name?: string;
   email?: string;
   phone?: string;
+  extraInfo?: string;
 };
 
 function readRequiredEnv(key: string): string {
@@ -25,15 +27,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON payload." }, { status: 400 });
   }
 
-  const service = payload.service?.trim() ?? "";
-  const projectDetails = payload.projectDetails?.trim() ?? "";
+  const category = payload.category?.trim() ?? "";
+  const date = payload.date?.trim() ?? "";
+  const time = payload.time?.trim() ?? "";
   const name = payload.name?.trim() ?? "";
   const email = payload.email?.trim() ?? "";
   const phone = payload.phone?.trim() ?? "";
+  const extraInfo = payload.extraInfo?.trim() ?? "";
 
-  if (!service || !projectDetails || !name || !email) {
+  if (!category || !date || !time || !name || !email) {
     return NextResponse.json(
-      { error: "Service, project details, name, and email are required." },
+      { error: "Category, date, time, name, and email are required." },
       { status: 400 },
     );
   }
@@ -58,29 +62,66 @@ export async function POST(request: Request) {
       },
     });
 
+    const parsedDate = new Date(date);
+    const safeDateLabel = Number.isNaN(parsedDate.getTime()) ? date : parsedDate.toISOString().slice(0, 10);
+    const safeTimeLabel = time;
+
     await transporter.sendMail({
       from: fromEmail,
       to: toEmail,
       replyTo: email,
-      subject: `Portfolio Contact: ${service} - ${name}`,
+      subject: `Service Request: ${category} - ${name}`,
       text: [
-        `Service: ${service}`,
+        `Category: ${category}`,
+        `Date: ${safeDateLabel}`,
+        `Time: ${safeTimeLabel}`,
         `Name: ${name}`,
         `Email: ${email}`,
         `Phone: ${phone || "Not provided"}`,
         "",
-        "Project Details:",
-        projectDetails,
+        "Additional information:",
+        extraInfo || "None provided",
       ].join("\n"),
       html: `
         <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111;">
-          <h2 style="margin-bottom:8px;">New Portfolio Contact Message</h2>
-          <p><strong>Service:</strong> ${service}</p>
+          <h2 style="margin-bottom:8px;">New Service Request</h2>
+          <p><strong>Category:</strong> ${category}</p>
+          <p><strong>Date:</strong> ${safeDateLabel}</p>
+          <p><strong>Time:</strong> ${safeTimeLabel}</p>
           <p><strong>Name:</strong> ${name}</p>
           <p><strong>Email:</strong> ${email}</p>
           <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-          <p style="margin-top:16px;"><strong>Project Details:</strong></p>
-          <p style="white-space:pre-wrap;">${projectDetails}</p>
+          <p style="margin-top:16px;"><strong>Additional information:</strong></p>
+          <p style="white-space:pre-wrap;">${extraInfo || "None provided"}</p>
+        </div>
+      `,
+    });
+
+    await transporter.sendMail({
+      from: fromEmail,
+      to: email,
+      subject: "Request received",
+      text: [
+        `Hi ${name || "there"},`,
+        "",
+        "Thanks for reaching out — I’ve received your service request and will get back to you shortly.",
+        "",
+        `Category: ${category}`,
+        `Requested date: ${safeDateLabel}`,
+        `Requested time: ${safeTimeLabel}`,
+        "",
+        "— Jerome",
+      ].join("\n"),
+      html: `
+        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111;">
+          <p>Hi ${name || "there"},</p>
+          <p>
+            Thanks for reaching out — I’ve received your service request and will get back to you shortly.
+          </p>
+          <p><strong>Category:</strong> ${category}</p>
+          <p><strong>Requested date:</strong> ${safeDateLabel}</p>
+          <p><strong>Requested time:</strong> ${safeTimeLabel}</p>
+          <p style="margin-top:18px;">— Jerome</p>
         </div>
       `,
     });

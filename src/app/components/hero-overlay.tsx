@@ -190,7 +190,7 @@ export function HeroOverlay() {
             aria-hidden
             animate={shouldReduceMotion ? undefined : { y: [0, -10, 0], rotate: [0, 1.2, 0] }}
             transition={shouldReduceMotion ? undefined : { duration: 8.5, repeat: Infinity, ease: "easeInOut" }}
-            className="relative h-[370px] w-[320px]"
+            className="relative h-[474px] w-[451px]"
           >
             <div
               className="relative h-full w-full overflow-hidden border border-white/15 bg-white/8 shadow-[0_28px_70px_rgba(0,0,0,0.35)] backdrop-blur-2xl"

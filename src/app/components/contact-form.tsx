@@ -1,16 +1,22 @@
 "use client";
 
 import { AnimatePresence, motion, type Variants } from "framer-motion";
-import { Check, Loader2 } from "lucide-react";
+import { Check, ChevronLeft, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from "react";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/style.css";
 
-type ServiceOption = "Web Development" | "System Architecture" | "Mobile Prototype" | "Other";
+type ServiceOption =
+  | "Web & App Development"
+  | "IT Infrastructure & Technical Support"
+  | "Training & Mentorship"
+  | "Other";
 type SubmitState = "idle" | "loading" | "sent";
 
 const OPTIONS: ServiceOption[] = [
-  "Web Development",
-  "System Architecture",
-  "Mobile Prototype",
+  "Web & App Development",
+  "IT Infrastructure & Technical Support",
+  "Training & Mentorship",
   "Other",
 ];
 
@@ -66,24 +72,30 @@ function FloatingField({
 }
 
 export function ContactForm() {
-  const [step, setStep] = useState<1 | 2>(1);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
   const [selectedService, setSelectedService] = useState<ServiceOption | null>(null);
-  const [projectDetails, setProjectDetails] = useState("");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [extraInfo, setExtraInfo] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const canContinue = useMemo(() => selectedService !== null, [selectedService]);
+  const canContinueFromStep1 = useMemo(() => selectedService !== null, [selectedService]);
+  const canContinueFromStep2 = useMemo(
+    () => Boolean(selectedDate && selectedTime.trim()),
+    [selectedDate, selectedTime],
+  );
 
   useEffect(() => {
-    if (step !== 2) {
+    if (step !== 3) {
       return;
     }
     const timeout = window.setTimeout(() => {
-      const details = document.getElementById("project-details");
-      details?.focus();
+      const clientName = document.getElementById("client-name");
+      clientName?.focus();
     }, 220);
     return () => window.clearTimeout(timeout);
   }, [step]);
@@ -93,8 +105,8 @@ export function ContactForm() {
     if (submitState !== "idle") {
       return;
     }
-    if (!selectedService || !name.trim() || !email.trim() || !projectDetails.trim()) {
-      setSubmitError("Please complete service, name, email, and project details.");
+    if (!selectedService || !selectedDate || !selectedTime.trim() || !name.trim() || !email.trim()) {
+      setSubmitError("Please complete category, date, time, name, and email.");
       return;
     }
 
@@ -106,11 +118,13 @@ export function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          service: selectedService,
-          projectDetails,
+          category: selectedService,
+          date: selectedDate.toISOString(),
+          time: selectedTime,
           name,
           email,
           phone,
+          extraInfo,
         }),
       });
 
@@ -120,11 +134,13 @@ export function ContactForm() {
       }
 
       setSubmitState("sent");
-      setProjectDetails("");
       setName("");
       setEmail("");
       setPhone("");
       setSelectedService(null);
+      setSelectedDate(undefined);
+      setSelectedTime("");
+      setExtraInfo("");
       setStep(1);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Something went wrong.";
@@ -152,14 +168,47 @@ export function ContactForm() {
         >
           <div className="sheen-layer pointer-events-none absolute inset-[-35%]" />
           <div className="relative z-10">
-            <h2 className="text-xl font-semibold text-white sm:text-3xl">Contact Me</h2>
+            <h2 className="text-[1.9rem] font-black tracking-tight text-white sm:text-4xl md:text-[2.5rem]">
+              Contact Me
+            </h2>
             <p className="mt-2 text-sm text-zinc-400 sm:text-base">
-              Tell me about your idea, and I will help turn it into a working product.
+              A quick service request flow where you choose a category, pick a date, then share your details.
             </p>
 
             <div className="mt-7">
               <AnimatePresence mode="wait">
-                {step === 1 ? (
+                {submitState === "sent" ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -18, scale: 0.98 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center backdrop-blur-2xl sm:p-8"
+                  >
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: "spring", stiffness: 260, damping: 18 }}
+                      className="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-white/15 bg-white/10 text-white shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+                    >
+                      <Check className="h-7 w-7" />
+                    </motion.div>
+                    <p className="mt-4 text-xs font-mono uppercase tracking-[0.18em] text-zinc-300">
+                      THANK YOU
+                    </p>
+                    <p className="mt-2 text-sm text-zinc-200 sm:text-base">
+                      Your request has been logged. I will be in touch shortly.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setSubmitState("idle")}
+                      className="mt-6 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-white/15"
+                    >
+                      Send another request
+                    </button>
+                  </motion.div>
+                ) : step === 1 ? (
                   <motion.div
                     key="step-1"
                     variants={pageVariants}
@@ -174,7 +223,7 @@ export function ContactForm() {
                       variants={staggerContainer}
                       initial="initial"
                       animate="animate"
-                      className="grid grid-cols-1 gap-3 md:grid-cols-2"
+                      className="flex flex-wrap gap-2"
                     >
                       {OPTIONS.map((option) => {
                         const active = selectedService === option;
@@ -185,7 +234,7 @@ export function ContactForm() {
                             variants={staggerItem}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => setSelectedService(option)}
-                            className={`rounded-2xl border px-4 py-3 text-left text-sm leading-snug transition-all duration-200 sm:py-4 ${
+                            className={`rounded-full border px-4 py-2 text-sm leading-snug transition-all duration-200 ${
                               active
                                 ? "border-cyan-400/80 bg-cyan-400/10 text-zinc-100 shadow-[0_0_0_2px_rgba(6,182,212,0.16),0_0_28px_rgba(6,182,212,0.25)]"
                                 : "border-white/15 bg-white/5 text-zinc-300 hover:border-white/30 hover:text-zinc-100"
@@ -201,27 +250,26 @@ export function ContactForm() {
                       <motion.button
                         type="button"
                         whileTap={{ scale: 0.97 }}
-                        onClick={() => canContinue && setStep(2)}
-                        disabled={!canContinue}
+                        onClick={() => canContinueFromStep1 && setStep(2)}
+                        disabled={!canContinueFromStep1}
                         className="w-full rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 disabled:cursor-not-allowed disabled:opacity-45 md:w-auto"
                       >
                         Continue
                       </motion.button>
                     </div>
                   </motion.div>
-                ) : (
-                  <motion.form
+                ) : step === 2 ? (
+                  <motion.div
                     key="step-2"
                     variants={pageVariants}
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    onSubmit={handleSubmit}
                     className="space-y-4"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm text-zinc-300">
-                        Service: <span className="text-zinc-100">{selectedService}</span>
+                        Category: <span className="text-zinc-100">{selectedService}</span>
                       </p>
                       <button
                         type="button"
@@ -232,21 +280,134 @@ export function ContactForm() {
                       </button>
                     </div>
 
-                    <motion.textarea
-                      id="project-details"
-                      value={projectDetails}
-                      onChange={(event) => {
-                        setProjectDetails(event.target.value);
-                        event.target.style.height = "auto";
-                        event.target.style.height = `${event.target.scrollHeight}px`;
-                      }}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, ease: "easeOut" }}
-                      rows={3}
-                      placeholder="Describe your project..."
-                      className="min-h-[110px] w-full resize-none rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-zinc-100 outline-none transition-all duration-200 placeholder:text-zinc-500 focus:border-cyan-400/70 focus:shadow-[0_0_0_3px_rgba(6,182,212,0.14)]"
-                    />
+                    <p className="text-sm font-medium text-zinc-200">Select a date and time</p>
+
+                    <div className="grid gap-4 sm:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] sm:items-start">
+                      <div className="rounded-3xl border border-white/10 bg-white/5 p-3 backdrop-blur-2xl sm:p-4">
+                        <DayPicker
+                          mode="single"
+                          selected={selectedDate}
+                          onSelect={setSelectedDate}
+                          fromDate={new Date()}
+                          showOutsideDays
+                          className="w-full text-zinc-100"
+                          classNames={{
+                            caption: "flex items-center justify-between px-2 py-2",
+                            caption_label: "text-sm font-semibold text-zinc-100",
+                            nav: "flex items-center gap-1",
+                            nav_button:
+                              "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-100 transition-colors hover:bg-white/10",
+                            table: "w-full border-collapse",
+                            head_row: "",
+                            head_cell:
+                              "py-2 text-center text-[11px] font-mono uppercase tracking-[0.18em] text-zinc-400",
+                            row: "",
+                            cell: "p-1 text-center",
+                            day:
+                              "inline-flex h-10 w-10 items-center justify-center rounded-full text-sm text-zinc-200 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60",
+                            day_today: "border border-white/15 bg-white/5 text-zinc-100",
+                            day_selected:
+                              "bg-cyan-400/15 text-white shadow-[0_0_0_2px_rgba(6,182,212,0.22),0_0_24px_rgba(6,182,212,0.22)]",
+                            day_outside: "text-zinc-600 opacity-60",
+                            day_disabled: "text-zinc-700 opacity-50",
+                          }}
+                        />
+                      </div>
+
+                      <div className="space-y-3 rounded-3xl border border-white/10 bg-white/5 p-4 text-sm text-zinc-200 backdrop-blur-2xl">
+                        <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-zinc-400">
+                          Time preference
+                        </p>
+                        <p className="text-xs text-zinc-400">
+                          A rough time window is enough; it simply helps me plan replies and calls.
+                        </p>
+                        <div className="mt-1">
+                          <label className="group relative block">
+                            <input
+                              type="time"
+                              value={selectedTime}
+                              onChange={(event) => setSelectedTime(event.target.value)}
+                              className="w-full rounded-2xl border border-white/15 bg-black/40 px-4 py-2.5 text-sm text-zinc-100 outline-none transition-all duration-200 focus:border-cyan-400/70 focus:shadow-[0_0_0_3px_rgba(6,182,212,0.18)]"
+                            />
+                          </label>
+                          <p className="mt-1 text-[11px] text-zinc-500">
+                            Example: 14:30 in your local time.
+                          </p>
+                        </div>
+
+                        <div className="mt-2 text-xs text-zinc-400">
+                          {selectedDate ? (
+                            <>
+                              <span className="text-zinc-500">Selected:</span>{" "}
+                              <span className="text-zinc-200">
+                                {selectedDate.toLocaleDateString(undefined, {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                })}
+                              </span>
+                              {selectedTime ? (
+                                <>
+                                  {" "}
+                                  at <span className="text-zinc-200">{selectedTime}</span>
+                                </>
+                              ) : null}
+                            </>
+                          ) : (
+                            <span>Pick a date, then choose a time.</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
+                      <motion.button
+                        type="button"
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setStep(1)}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-white/10 sm:w-auto"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        Back
+                      </motion.button>
+                      <motion.button
+                        type="button"
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => canContinueFromStep2 && setStep(3)}
+                        disabled={!canContinueFromStep2}
+                        className="inline-flex w-full items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors disabled:cursor-not-allowed disabled:opacity-45 hover:bg-white/15 sm:w-auto"
+                      >
+                        Continue
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="step-3"
+                    variants={pageVariants}
+                    initial="initial"
+                    animate="animate"
+                    exit="exit"
+                    onSubmit={handleSubmit}
+                    className="space-y-4"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-sm text-zinc-300">
+                        Category: <span className="text-zinc-100">{selectedService}</span>
+                      </p>
+                      <p className="text-xs text-zinc-400">
+                        Date:{" "}
+                        <span className="text-zinc-200">
+                          {selectedDate
+                            ? selectedDate.toLocaleDateString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              })
+                            : "Not selected"}
+                        </span>
+                      </p>
+                    </div>
 
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                       <FloatingField
@@ -273,58 +434,61 @@ export function ContactForm() {
                       onChange={(event) => setPhone(event.target.value)}
                     />
 
-                    <motion.button
-                      type="submit"
-                      whileTap={{ scale: 0.97 }}
-                      disabled={submitState === "loading"}
-                      className="radiant-submit group relative mt-2 inline-flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 px-5 text-sm font-semibold text-zinc-100 backdrop-blur-xl md:w-auto"
-                    >
-                      <span className="submit-sheen pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.46),transparent)]" />
+                    <motion.textarea
+                      id="extra-info"
+                      value={extraInfo}
+                      onChange={(event) => setExtraInfo(event.target.value)}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.28, ease: "easeOut" }}
+                      rows={3}
+                      placeholder="Other details you’d like to share (optional)…"
+                      className="min-h-[96px] w-full resize-none rounded-2xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-zinc-100 outline-none transition-all duration-200 placeholder:text-zinc-500 focus:border-cyan-400/70 focus:shadow-[0_0_0_3px_rgba(6,182,212,0.14)]"
+                    />
 
-                      <AnimatePresence mode="wait" initial={false}>
-                        {submitState === "idle" && (
-                          <motion.span
-                            key="idle"
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative z-10"
-                          >
-                            Send Message
-                          </motion.span>
-                        )}
-                        {submitState === "loading" && (
-                          <motion.span
-                            key="loading"
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative z-10 inline-flex items-center gap-2"
-                          >
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Sending...
-                          </motion.span>
-                        )}
-                        {submitState === "sent" && (
-                          <motion.span
-                            key="sent"
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.2 }}
-                            className="relative z-10 inline-flex items-center gap-2"
-                          >
-                            <Check className="h-4 w-4" />
-                            Message Sent!
-                          </motion.span>
-                        )}
-                      </AnimatePresence>
-                    </motion.button>
                     {submitError ? (
-                      <p className="text-sm text-red-300/90">{submitError}</p>
+                      <motion.p
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200"
+                      >
+                        {submitError}
+                      </motion.p>
                     ) : null}
+
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <motion.button
+                        type="button"
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() => setStep(2)}
+                        className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:bg-white/10 sm:w-auto"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                        Back
+                      </motion.button>
+
+                      <motion.button
+                        type="submit"
+                        whileTap={{ scale: 0.97 }}
+                        disabled={submitState === "loading"}
+                        className="radiant-submit group relative inline-flex h-11 w-full items-center justify-center overflow-hidden rounded-full border border-white/20 bg-white/10 px-5 text-sm font-semibold text-zinc-100 backdrop-blur-xl md:w-auto"
+                      >
+                        <span className="submit-sheen pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-[linear-gradient(110deg,transparent,rgba(255,255,255,0.46),transparent)]" />
+                        <span className="relative z-10 inline-flex items-center gap-2">
+                          {submitState === "loading" ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Transmitting...
+                            </>
+                          ) : (
+                            <>
+                              <Check className="h-4 w-4" />
+                              Submit request
+                            </>
+                          )}
+                        </span>
+                      </motion.button>
+                    </div>
                   </motion.form>
                 )}
               </AnimatePresence>
