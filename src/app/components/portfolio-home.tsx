@@ -217,9 +217,9 @@ export function PortfolioHome() {
               <motion.div variants={itemVariant} className="order-1 lg:order-2">
                 <div className="mt-4">
                   <FlipHeading text="Tech Stack &amp; Tools" />
-                  <p className="mt-3 max-w-xl text-sm text-zinc-400 sm:text-base">
-                    The technologies I work with to turn ideas into working web applications, always
-                    learning and steadily improving.
+                  <p className="mt-3 w-full text-sm text-zinc-400 sm:text-base md:max-w-none">
+                    The technologies I work with to turn ideas into working web applications, always learning
+                    and steadily improving.
                   </p>
                 </div>
 
