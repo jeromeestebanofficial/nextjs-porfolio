@@ -290,21 +290,18 @@ export function ContactForm() {
                           onSelect={setSelectedDate}
                           fromDate={new Date()}
                           showOutsideDays
-                          className="w-full text-zinc-100"
+                          className="mx-auto w-full max-w-sm text-zinc-100"
                           classNames={{
-                            caption: "flex items-center justify-between px-2 py-2",
-                            caption_label: "text-sm font-semibold text-zinc-100",
+                            caption: "flex items-center justify-between px-1.5 py-2",
+                            caption_label: "text-xs sm:text-sm font-semibold text-zinc-100",
                             nav: "flex items-center gap-1",
                             nav_button:
-                              "inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-100 transition-colors hover:bg-white/10",
-                            table: "w-full border-collapse",
-                            head_row: "",
+                              "inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/10 bg-black/30 text-zinc-100 transition-colors hover:bg-white/10",
                             head_cell:
-                              "py-2 text-center text-[11px] font-mono uppercase tracking-[0.18em] text-zinc-400",
-                            row: "",
-                            cell: "p-1 text-center",
+                              "py-1 text-center text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.16em] text-zinc-400",
+                            cell: "p-0.5 text-center",
                             day:
-                              "inline-flex h-10 w-10 items-center justify-center rounded-full text-sm text-zinc-200 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60",
+                              "inline-flex h-9 w-9 items-center justify-center rounded-full text-xs sm:text-sm text-zinc-200 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/60",
                             day_today: "border border-white/15 bg-white/5 text-zinc-100",
                             day_selected:
                               "bg-cyan-400/15 text-white shadow-[0_0_0_2px_rgba(6,182,212,0.22),0_0_24px_rgba(6,182,212,0.22)]",
