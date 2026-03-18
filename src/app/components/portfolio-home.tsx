@@ -321,7 +321,7 @@ export function PortfolioHome() {
                 </h4>
                 <div className="mt-3 flex flex-col gap-2 text-sm text-zinc-400">
                   <a
-                    href="https://github.com"
+                    href="https://github.com/jeromeestebanofficial"
                     target="_blank"
                     rel="noreferrer"
                     className="transition-colors hover:text-zinc-100"
@@ -329,7 +329,7 @@ export function PortfolioHome() {
                     GitHub
                   </a>
                   <a
-                    href="https://linkedin.com"
+                    href="https://www.linkedin.com/in/jeromeestebanofficial/"
                     target="_blank"
                     rel="noreferrer"
                     className="transition-colors hover:text-zinc-100"
@@ -337,12 +337,12 @@ export function PortfolioHome() {
                     LinkedIn
                   </a>
                   <a
-                    href="https://discord.com/users/YOUR_DISCORD_ID"
+                    href="https://discord.com/"
                     target="_blank"
                     rel="noreferrer"
                     className="transition-colors hover:text-zinc-100"
                   >
-                    Discord
+                    Discord (jeromeesteban)
                   </a>
                 </div>
               </div>

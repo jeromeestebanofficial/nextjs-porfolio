@@ -118,13 +118,16 @@ export function HeroOverlay() {
             className="relative z-10 mt-6 flex w-full flex-col items-start gap-3 md:flex-row md:flex-wrap md:items-center"
           >
             <div className="inline-flex max-w-full items-center gap-2.5 rounded-full border border-white/20 bg-white/8 px-2.5 py-2 backdrop-blur-xl sm:gap-3 sm:px-3">
-              <SocialIconButton href="https://github.com" label="GitHub">
+              <SocialIconButton href="https://github.com/jeromeestebanofficial" label="GitHub">
                 <Github className="h-4 w-4 sm:h-5 sm:w-5" />
               </SocialIconButton>
-              <SocialIconButton href="https://linkedin.com" label="LinkedIn">
+              <SocialIconButton
+                href="https://www.linkedin.com/in/jeromeestebanofficial/"
+                label="LinkedIn"
+              >
                 <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
               </SocialIconButton>
-              <SocialIconButton href="https://discord.com/users/YOUR_DISCORD_ID" label="Discord">
+              <SocialIconButton href="https://discord.com/" label="Discord: jeromeesteban">
                 <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
               </SocialIconButton>
             </div>
